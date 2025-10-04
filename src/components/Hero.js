@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import Heroimg from '../assets/Hero.jpeg';
 import { AiOutlineLinkedin, AiOutlineGithub, AiFillDelete, AiFillEdit } from 'react-icons/ai';
 import axios from 'axios';
-
+const Heroimg='/assets/Hero.jpeg';
 export default function Hero() {
   const [skills, setSkills] = useState([]);
   const [animatedSkills, setAnimatedSkills] = useState([]);
