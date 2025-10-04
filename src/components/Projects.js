@@ -14,7 +14,7 @@ const Project = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/projects');
+        const res = await axios.get('https://protfolio-backend-25fy.onrender.com/api/projects');
         setBackendProjects(res.data);
       } catch (err) {
         console.error(err);
@@ -34,7 +34,7 @@ const Project = () => {
     formData.append('name', name);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/projects', formData, {
+      const res = await axios.post('https://protfolio-backend-25fy.onrender.com/api/projects', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setBackendProjects([...backendProjects, res.data]);
