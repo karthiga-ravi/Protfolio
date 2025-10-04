@@ -1,4 +1,4 @@
-import resumeimg from '../assets/resume.jpg';
+const resumeimg ='/assets/resume.jpg';
 export default function Resume(){
     const config={
         link:'https://pdflink.to/86bf1203/',
