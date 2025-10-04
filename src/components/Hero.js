@@ -16,7 +16,7 @@ export default function Hero() {
 
   const fetchSkills = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/skills");
+      const res = await axios.get("https://protfolio-backend-25fy.onrender.com/api/skills");
       setSkills(res.data);
       setTimeout(() => setAnimatedSkills(res.data), 100);
     } catch (err) {
@@ -29,13 +29,13 @@ export default function Hero() {
     try {
       if (editingId) {
         // Update skill
-        const res = await axios.put(`http://localhost:5000/api/skills/${editingId}`, { name, level });
+        const res = await axios.put(`https://protfolio-backend-25fy.onrender.com/api/skills/${editingId}`, { name, level });
         setSkills(skills.map(s => s._id === editingId ? res.data : s));
         setAnimatedSkills(skills.map(s => s._id === editingId ? res.data : s));
         setEditingId(null);
       } else {
         // Create new skill
-        const res = await axios.post("http://localhost:5000/api/skills", { name, level });
+        const res = await axios.post("https://protfolio-backend-25fy.onrender.com/api/skills", { name, level });
         setSkills([...skills, res.data]);
         setAnimatedSkills([...animatedSkills, res.data]);
       }
@@ -55,7 +55,7 @@ export default function Hero() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this skill?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/skills/${id}`);
+      await axios.delete(`https://protfolio-backend-25fy.onrender.com/api/skills/${id}`);
       setSkills(skills.filter(s => s._id !== id));
       setAnimatedSkills(animatedSkills.filter(s => s._id !== id));
     } catch (err) {
