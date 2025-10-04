@@ -1,4 +1,4 @@
-import aboutimg from '../assets/about.png';
+const aboutimg ='/assets/about.png';
 export default function About(){
     const config={
         line1:'Hi, am Karthiga. I am a final year proactive student.  My proficiency in Java with a strong academic foundation, positions me as a dynamic candidate.',
