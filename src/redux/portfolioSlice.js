@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import cobuddy from '/assets/cobuddy.png';
-import prep from '/assets/prepiq.png';
-
+const cobuddy = '/assets/cobuddy.png';
+const prep = '/assets/prepiq.png';
 const portfolioSlice = createSlice({
   name: 'portfolio',
   initialState: {
