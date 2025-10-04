@@ -3,31 +3,36 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 const Project = () => {
-  const reduxProjects = useSelector(state => state.portfolio.projects);
+  const reduxProjects = useSelector((state) => state.portfolio.projects);
   const [backendProjects, setBackendProjects] = useState([]);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [link, setLink] = useState('');
   const [imageFile, setImageFile] = useState(null);
 
+  // Make sure this matches your backend URL
   const BACKEND_URL = 'https://protfolio-backend-25fy.onrender.com';
 
-  // Fetch backend projects
+  // Fetch projects from backend on first render
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/projects`);
         setBackendProjects(res.data);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching projects:', err);
       }
     };
     fetchProjects();
   }, []);
 
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!imageFile || !desc || !link || !name) return alert('Please fill all fields');
+
+    if (!imageFile || !desc || !link || !name) {
+      return alert('Please fill all fields');
+    }
 
     const formData = new FormData();
     formData.append('image', imageFile);
@@ -40,50 +45,120 @@ const Project = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+      // Refresh projects after successful upload
       const updated = await axios.get(`${BACKEND_URL}/api/projects`);
       setBackendProjects(updated.data);
 
+      // Reset form
       setName('');
       setDesc('');
       setLink('');
       setImageFile(null);
       document.querySelector('input[type="file"]').value = '';
     } catch (err) {
-      console.error(err);
+      console.error('Error uploading project:', err);
     }
   };
 
+  // Merge redux and backend projects
   const allProjects = [...reduxProjects, ...backendProjects];
 
   return (
     <section className="flex flex-col py-20 px-5 justify-center bg-primary text-white">
-      <h1 className="text-4xl border-b-4 border-[#692f75] mb-8 w-[160px] font-bold">Projects</h1>
+      <h1 className="text-4xl border-b-4 border-[#692f75] mb-8 w-[160px] font-bold">
+        Projects
+      </h1>
 
+      {/* Project Cards */}
       <div className="flex flex-wrap gap-6 justify-center">
         {allProjects.map((p, idx) => (
-          <div key={idx} className="bg-[#7b3a7c] rounded-md overflow-hidden w-full sm:w-[300px] md:w-[400px] hover:scale-105 transition-transform flex flex-col">
-            <h3 className="font-hero-font text-center text-xl font-bold mb-2 mt-2 text-white">{p.name}</h3>
+          <div
+            key={idx}
+            className="bg-[#7b3a7c] rounded-md overflow-hidden w-full sm:w-[300px] md:w-[400px] hover:scale-105 transition-transform flex flex-col"
+          >
+            <h3 className="font-hero-font text-center text-xl font-bold mb-2 mt-2 text-white">
+              {p.name}
+            </h3>
+
+            {/* Display image from uploads if available */}
             <div className="w-full overflow-hidden rounded-md">
               <img
-                src={p.image ? `data:image/${p.imageType || 'jpeg'};base64,${p.image}` : 'https://via.placeholder.com/300x200?text=No+Image'}
+                src={
+                  p.image
+                    ? `${BACKEND_URL}/uploads/${p.image}` // ✅ Use correct URL
+                    : 'https://via.placeholder.com/300x200?text=No+Image'
+                }
                 alt={p.name || 'project'}
                 className="w-full object-cover rounded-md"
                 style={{ maxHeight: '400px' }}
               />
             </div>
+
             <p className="text-center py-2 flex-grow m-3">{p.desc}</p>
-            <a href={p.link} target="_blank" rel="noreferrer" className="bg-[#b56ec3] text-center px-5 py-2 font-bold hover:border-2 border-white rounded mb-3 ml-14 mr-14">View Project</a>
+
+            <a
+              href={p.link}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-[#b56ec3] text-center px-5 py-2 font-bold hover:border-2 border-white rounded mb-3 ml-14 mr-14"
+            >
+              View Project
+            </a>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col mb-10 max-w-md mt-8 self-center">
-        <input type="text" placeholder="Project Name" value={name} onChange={(e) => setName(e.target.value)} className="mb-3 p-2 rounded text-black" />
-        {imageFile && <img src={URL.createObjectURL(imageFile)} alt="preview" className="w-full object-cover rounded-md mb-2 max-h-64" />}
-        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="mb-3 p-2 rounded text-black" />
-        <input type="text" placeholder="Project Description" value={desc} onChange={(e) => setDesc(e.target.value)} className="mb-3 p-2 rounded text-black" />
-        <input type="text" placeholder="Project Link" value={link} onChange={(e) => setLink(e.target.value)} className="mb-3 p-2 rounded text-black" />
-        <button type="submit" className="bg-[#692f75] px-4 py-2 rounded font-bold hover:border-2 border-white">Add Project</button>
+      {/* Project Upload Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col mb-10 max-w-md mt-8 self-center"
+      >
+        <input
+          type="text"
+          placeholder="Project Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="mb-3 p-2 rounded text-black"
+        />
+
+        {/* Preview selected image */}
+        {imageFile && (
+          <img
+            src={URL.createObjectURL(imageFile)}
+            alt="preview"
+            className="w-full object-cover rounded-md mb-2 max-h-64"
+          />
+        )}
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files[0])}
+          className="mb-3 p-2 rounded text-black"
+        />
+
+        <input
+          type="text"
+          placeholder="Project Description"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          className="mb-3 p-2 rounded text-black"
+        />
+
+        <input
+          type="text"
+          placeholder="Project Link"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          className="mb-3 p-2 rounded text-black"
+        />
+
+        <button
+          type="submit"
+          className="bg-[#692f75] px-4 py-2 rounded font-bold hover:border-2 border-white"
+        >
+          Add Project
+        </button>
       </form>
     </section>
   );
